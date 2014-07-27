@@ -3,7 +3,7 @@ Code Book for Samsung Data Analysis
 
 ###Description: 
 
-This file describes the logic used to produce the output data set. The 
+This file describes the logic used to produce the output data set. The data is a set of measurements while subject performed the labelled activity. See data readme file for futher details. We take a subset of the measurements for all subjects for analysis.
 
 ###Raw files used:
 
@@ -31,7 +31,7 @@ This file describes the logic used to produce the output data set. The
 5. Section 'Summarize the variables by subject and activity'
 	* We create a second data set which averages all fields by subject and activity
 	* To perform this, we create a data frame subjectActivity which contains unique combinations of subject_id and activity_name
-	* Then, use mappy to run over these combinations, and use apply within each combination to average columns for that particular combination
+	* Then, use mapply to run over these combinations, and use apply within each combination to average columns for that particular combination
 	* Note the use of the transpose (t) to appropriately combine each row average
 6. Section 'Write out the data set'
 	* We write out the data set as 'tidyData.csv'
