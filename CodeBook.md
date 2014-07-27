@@ -12,6 +12,7 @@ Raw files used:
 * UCI HAR Dataset\features.txt: A listing of the descriptive column names for the X_train.txt and X_test.txt data above
 	
 Logic performed in run_analysis.R:
+
 1. Section 'Read in flat files'
 	* We read in the data (X_train.txt and X_test.txt) as numeric fields
 	* Since the subject_id and activity labels are in the same row order, we simply attach them to the data frame
