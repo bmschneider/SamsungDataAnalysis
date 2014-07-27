@@ -39,8 +39,6 @@ testDataSubject <- read.table(file= 'UCI HAR Dataset/test/subject_test.txt', col
 testData$activity_cd <- testDataActivity$activity_cd
 testData$subject_id <- testDataSubject$subject_id
 
-
-
 ## Retain only the data we want
 
 selectedVarIndex <- c(grep(columnNames$col_name, pattern= 'mean()', value = FALSE), 
@@ -56,7 +54,7 @@ selectedTestData <- testData[, selectedVarIndex]
 
 selectedData <- rbind(selectedTrainData, selectedTestData)
 
-## Merge in the descriptive activity names
+## Merge in activity names
 
 selectedData <- merge(x= selectedData, y= activityNames, by= 'activity_cd', sort= FALSE)
 
