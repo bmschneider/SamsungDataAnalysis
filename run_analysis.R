@@ -81,6 +81,6 @@ averageBySubjectActivity <- t(result)
 
 ## Write out the data set
 
-write.csv(selectedData, 'tidyData.txt')
+write.csv(selectedData, 'tidyData.txt', row.names= FALSE)
 
 
