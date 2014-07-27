@@ -1,4 +1,6 @@
-Title: Code Book for Samsung Data Analysis
+Code Book for Samsung Data Analysis
+===================================
+
 Description: This file describes the logic used to produce the output data set
 
 Raw files used:
