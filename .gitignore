@@ -1,0 +1,7 @@
+*.ipynb_checkpoints
+build/*
+dist/*
+data/raw/*
+data/interim/*
+*.cpython*.pyc
+reports/*

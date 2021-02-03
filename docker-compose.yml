@@ -3,7 +3,7 @@ version: '3'
 services:
   jupyterlab:
     build: .
-    container_name: sda
+    image: data_analysis
     volumes:
       - ./:/project
     ports:
