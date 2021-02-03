@@ -3,6 +3,7 @@ import zipfile
 import io
 import os
 from pathlib import Path
+import pandas as pd
 
 uci_har_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip"
 
@@ -10,6 +11,8 @@ uci_har_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00240/U
 def load_har_data_from_repo(fileout='.'):
     """Loads the UCI HAR data, and gets from repo if not there."""
 
+    if not os.path.exists('data'): os.mkdir('data')
+    if not os.path.exists('data/raw'): os.mkdir('data/raw')
     req = requests.get(uci_har_url)
     zfile = zipfile.ZipFile(io.BytesIO(req.content))
     zfile.extractall(fileout)
@@ -19,6 +22,7 @@ def load_har_data_from_repo(fileout='.'):
 def load_feature_data():
     """Load the feature data into `pandas.DataFrame`."""
 
+    if not os.path.exists('data/interim'): os.mkdir('data/interim')
     local_uci_har_path = Path('data/raw/UCI HAR Dataset')
     feature_name_df = pd.read_csv(local_uci_har_path / 'features.txt', sep='\s+', names=['id', 'name'])
     feature_name_df['unique_name'] = feature_name_df.apply(lambda x: x['name'] + '_' + str(x.id), axis=1)
