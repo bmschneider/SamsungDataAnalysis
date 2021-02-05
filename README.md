@@ -12,7 +12,7 @@ An analysis of smartphone sensor data.
 
 Organized according to the [cookiecutter-datascience](https://drivendata.github.io/cookiecutter-data-science/) convention (folders are created during project setup).
 * `config/start.py`: Jupyterlab config file.
-* `data`: Landing point for data.
+* `data`: Landing point for data, broken up into `raw`, `interim`, and `processed`.
 * `references/CodeBook.md`: description of the output data and transformations performed.
 * `reports`: Landing point for reports.
 * `notebooks/1 - EDA.ipynb`: Loading data and generating EDA report.
