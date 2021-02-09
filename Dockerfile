@@ -1,4 +1,4 @@
-FROM jupyter/scipy-notebook
+FROM jupyter/tensorflow-notebook
 
 ENV JUPYTER_ENABLE_LAB=1
 
