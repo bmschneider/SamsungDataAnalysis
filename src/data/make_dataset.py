@@ -20,6 +20,7 @@ def load_har_data_from_repo(fileout='.'):
     req = requests.get(uci_har_url)
     zfile = zipfile.ZipFile(io.BytesIO(req.content))
     zfile.extractall(fileout)
+
     return
 
 
@@ -37,10 +38,10 @@ def load_subject_series(path, dataset='train'):
         .rename(columns={'index': 'min_index'})
 
     subjects_min = subjects.merge(min_indices)
-    subjects_min['time_exp'] = \
+    subjects_min['time_window_s'] = \
         1.28*(subjects_min['index'] - subjects_min.min_index)
 
-    return subjects_min[['index', 'subject_id', 'time_exp']]
+    return subjects_min[['index', 'subject_id', 'time_window_s']]
 
 
 def load_activity_names():
@@ -57,7 +58,6 @@ def load_raw_signal(signal_name, path, file):
     dataset_path = path / 'Inertial Signals'
     windows = pd.read_csv(dataset_path / file, sep='\s+', header=None)
     signal = windows \
-        .iloc[:, :64] \
         .reset_index() \
         .melt(id_vars='index', value_name=signal_name, var_name='time_counter') \
         .sort_values(by=['index', 'time_counter']) \
@@ -67,8 +67,13 @@ def load_raw_signal(signal_name, path, file):
     return signal[['index', 'time_counter', signal_name]]
 
 
-def load_raw_data(dataset='train'):
-    """Load the windowed raw data into `pandas.DataFrame` for the `dataset`."""
+def load_raw_data(dataset='train', reload=False):
+    """Load the windowed raw data into `pandas.DataFrame` for the `dataset`.
+
+    Args:
+        dataset (str): Either train or test.
+        reload (bool): Whether to reload from raw downloaded copy.
+    """
 
     if not os.path.exists('data/interim'): os.mkdir('data/interim')
     file_path = Path(f'data/interim/raw_{dataset}_df.csv')
@@ -78,7 +83,7 @@ def load_raw_data(dataset='train'):
 
     path = local_uci_har_path / dataset
 
-    subjects = load_subject_series(path, dataset)
+    full_dataset = load_subject_series(path, dataset)
     labels = pd.read_csv(path / f'y_{dataset}.txt',
                          sep='\s+',
                          names=['activity_id']) \
@@ -88,22 +93,19 @@ def load_raw_data(dataset='train'):
                     'body_gyro_x', 'body_gyro_y', 'body_gyro_z',
                     'total_acc_x', 'total_acc_y', 'total_acc_z']
 
-    sensors = load_raw_signal(signal_names[0],
-                              path,
-                              f'{signal_names[0]}_{dataset}.txt')
-    for s in signal_names[1:]:
-        sensors = sensors.merge(load_raw_signal(s, path, f'{s}_{dataset}.txt'))
+    for s in signal_names:
+        full_dataset = full_dataset \
+            .merge(load_raw_signal(s, path, f'{s}_{dataset}.txt'))
 
-    full_dataset = subjects \
-        .merge(sensors) \
-        .merge(labels)
-    full_dataset['time_exp'] = full_dataset \
-        .apply(
-            lambda x: x.time_exp + x.time_counter*0.02,
-            axis=1)
-    final_col_set = ['subject_id', 'time_exp'] + signal_names + ['activity_id']
+    full_dataset = full_dataset.merge(labels)
+    full_dataset['time_exp'] = \
+        full_dataset.time_window_s + 0.02*full_dataset.time_counter
+    final_col_set = \
+        ['subject_id', 'time_exp', 'time_window_s', 'time_counter'] + \
+        signal_names + ['activity_id']
     full_dataset.loc[:, final_col_set] \
         .to_csv(file_path, index=False)
+
     return full_dataset.loc[:, final_col_set]
 
 
